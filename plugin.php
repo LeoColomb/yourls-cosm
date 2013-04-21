@@ -4,19 +4,19 @@ Plugin Name: Cosm DataStream
 Plugin URI: http://github.com/LeoColomb/Cosm-for-Yourls
 Description: Puch to Cosm YOURLS data.
 Version: 1.2
-Author: L&#233;o Colomb
+Author: Leo Colomb
 Author URI: http://twitter.com/LeoColomb
 */
 
+// No direct call
+if( !defined( 'YOURLS_ABSPATH' ) ) die();
+
 function lpc_update_cosm() {
-
 	/** Your configuration **/
-
 	$api_key = "YOUR_API_KEY";	// Set your Cosm API Key 
 	$feed = FEED_ID;			// Set your feed number
 	
 	/** Function System - You don't have to modify this **/
-
 	// Load Cosm API library
 	require_once('CosmAPI.php');
 
@@ -32,9 +32,9 @@ function lpc_update_cosm() {
 	
 	// Push data to Cosm - Allow DEBUG
 	if ( YOURLS_DEBUG == true ) {
-	$putYourlsData = $cosm->_debugStatus( $cosm->updateFeed("json", $feed, $data));
+	    $putYourlsData = $cosm->_debugStatus( $cosm->updateFeed("json", $feed, $data));
 	} else {
-	$putYourlsData = $cosm->updateFeed("json", $feed, $data);
+	    $putYourlsData = $cosm->updateFeed("json", $feed, $data);
 	}
 	
 	return $putYourlsData;

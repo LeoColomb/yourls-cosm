@@ -1,7 +1,7 @@
 <?php
 /**
  * Cosm API class
- * Version 0.3 (June 2011)
+ * Version 0.4 (June 2012)
  * Requirements: PHP5, cURL, API v.2.0
  *
  * This program is free software; you can redistribute it and/or modify
@@ -157,7 +157,7 @@ class CosmAPI
 	 * @param string format of output ("json", "xml", "csv")
 	 * @param int feed ID
 	 * @param string datastream ID
-     * @param string data
+	 * @param string data
 	 * @return http response headers
 	 */
 	public function updateDatastream($format=false, $feed, $datastream, $data)
@@ -210,21 +210,23 @@ class CosmAPI
 	 * @param bool find_previous
 	 * @param string interval_type ("discrete", false)
 	 * @param int interval (in seconds: 0, 30, 60, 300, 900, 3600, 10800, 21600, 43200, 86400)
+	 * @param string timezone
 	 * @return string
 	 */
-	public function getFeedHistory($format, $feed, $start=false, $end=false, $duration=false, $page=false, $per_page=false, $time=false, $find_previous=false, $interval_type=false, $interval=false)
+	public function getFeedHistory($format, $feed, $start=false, $end=false, $duration=false, $page=false, $per_page=false, $time=false, $find_previous=false, $interval_type=false, $interval=false, $timezone=false)
 	{
 		if($format && ($format == "json" || $format == "csv" || $format == "xml")) $feed .= ".". $format;
 		$url = "http://$this->Cosm/feeds/$feed?";
 		if($start) $url .= "start=" . $start . "&";
-		if($end) $url .= "content=" . $content . "&";
+		if($end) $url .= "end=" . $end . "&";
 		if($duration) $url .= "duration=" . $duration . "&";
 		if($page) $url .= "page=" . $page . "&";
-		if($per_page) $url .= "end=" . $end . "&";
+		if($per_page) $url .= "per_page=" . $per_page . "&";
 		if($time) $url .= "time=" . $time . "&";
 		if($find_previous) $url .= "find_previous=" . $find_previous . "&";
 		if($interval_type) $url .= "interval_type=" . $interval_type . "&";
 		if($interval) $url .= "interval=" . $interval;
+		if($timezone) $url .= "timezone=" . $timezone;
 		
 		return $this->_getRequest($url);
 	}
@@ -243,21 +245,23 @@ class CosmAPI
 	 * @param bool find_previous
 	 * @param string interval_type ("discrete", false)
 	 * @param int interval (in seconds: 0, 30, 60, 300, 900, 3600, 10800, 21600, 43200, 86400)
+	 * @param string timezone
 	 * @return string
 	 */
-	public function getDatastreamHistory($format, $feed, $datastream, $start=false, $end=false, $duration=false, $page=false, $per_page=false, $time=false, $find_previous=false, $interval_type=false, $interval=false)
+	public function getDatastreamHistory($format, $feed, $datastream, $start=false, $end=false, $duration=false, $page=false, $per_page=false, $time=false, $find_previous=false, $interval_type=false, $interval=false, $timezone=false)
 	{
 		if($format && ($format == "json" || $format == "csv" || $format == "xml")) $datastream .= ".". $format;
 		$url = "http://$this->Cosm/feeds/$feed/datastreams/$datastream?";
 		if($start) $url .= "start=" . $start . "&";
-		if($end) $url .= "content=" . $content . "&";
+		if($end) $url .= "end=" . $end . "&";
 		if($duration) $url .= "duration=" . $duration . "&";
 		if($page) $url .= "page=" . $page . "&";
-		if($per_page) $url .= "end=" . $end . "&";
+		if($per_page) $url .= "per_page=" . $per_page . "&";
 		if($time) $url .= "time=" . $time . "&";
 		if($find_previous) $url .= "find_previous=" . $find_previous . "&";
 		if($interval_type) $url .= "interval_type=" . $interval_type . "&";
 		if($interval) $url .= "interval=" . $interval;
+		if($timezone) $url .= "timezone=" . $timezone;
 		
 		return $this->_getRequest($url);
 	}
@@ -387,9 +391,9 @@ class CosmAPI
 		$postfields = http_build_query($data);  
 		$opts = array('http' =>  
 		   array(  
-		      'method'  => 'POST',  
-		      'header'  => 'Content-type: application/x-www-form-urlencoded',  
-		      'content' => $postfields,  
+			  'method'  => 'POST',  
+			  'header'  => 'Content-type: application/x-www-form-urlencoded',  
+			  'content' => $postfields,  
 		   )  
 		);  
 		$context  = stream_context_create($opts);  
